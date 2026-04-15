@@ -24,7 +24,7 @@ This library is friendly to PC and laptop execution, and optimized for resource 
 
 <a id="getting-started"></a>
 
-## Getting Started
+#### Getting Started
 
 * [Introduction to OpenVINO™ GenAI](https://openvinotoolkit.github.io/openvino.genai/docs/getting-started/introduction)
 * [Install OpenVINO™ GenAI](https://openvinotoolkit.github.io/openvino.genai/docs/getting-started/installation)
