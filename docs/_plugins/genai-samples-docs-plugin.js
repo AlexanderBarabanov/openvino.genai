@@ -108,24 +108,19 @@ module.exports = async function GenAISamplesDocsPlugin(_context, options) {
   const samplesPath = path.join(spokeRoot, 'samples');
   const docsSamplesPath = path.join(spokeRoot, 'docs', 'samples');
 
+  // Generate MDX files during plugin init — before plugin-content-docs scans.
+  console.info('Generating samples documentation...');
+  const samplesMap = await findSamples(samplesPath);
+  await generateSamplesDocs(samplesMap, docsSamplesPath, spokeRoot);
+  console.info('Done.');
+
   return {
     name: 'genai-samples-docs-plugin',
     async loadContent() {
-      return findSamples(samplesPath);
+      return samplesMap;
     },
     async contentLoaded({ content, actions }) {
       actions.setGlobalData(content);
-    },
-    async extendCli(cli) {
-      cli
-        .command('generate-samples-docs')
-        .description('Generate documentation pages for samples')
-        .action(async () => {
-          console.info('Generating samples documentation...');
-          const samplesMap = await findSamples(samplesPath);
-          await generateSamplesDocs(samplesMap, docsSamplesPath, spokeRoot);
-          console.info('Done.');
-        });
     },
   };
 };
