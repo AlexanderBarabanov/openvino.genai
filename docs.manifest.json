@@ -3,9 +3,5 @@
   "label": "OpenVINO GenAI",
   "docsPath": "docs",
   "routeBasePath": "openvino-genai",
-  "preBuild": {
-    "type": "generate-samples",
-    "samplesPath": "samples"
-  },
-  "sparseCheckoutPaths": ["docs/", "samples/", "docs.manifest.json"]
+  "plugins": ["_plugins/genai-samples-docs-plugin"]
 }
