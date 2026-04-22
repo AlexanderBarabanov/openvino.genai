@@ -3,5 +3,5 @@
   "label": "OpenVINO GenAI",
   "docsPath": "docs",
   "routeBasePath": "openvino-genai",
-  "plugins": ["_plugins/genai-samples-docs-plugin.ts"]
+  "plugins": ["_plugins/genai-samples-docs-plugin.js"]
 }

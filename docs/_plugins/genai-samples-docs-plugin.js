@@ -10,31 +10,18 @@
  *               Hub passes e.g. "spokes/openvino-genai".
  *               Defaults to ".." (original site/ layout).
  */
-import { Plugin } from '@docusaurus/types';
-import { access, mkdir, opendir, writeFile } from 'fs/promises';
-import path from 'path';
-
-type GenAISample = {
-  language: string;
-  languageTitle: string;
-  name: string;
-  hasReadme: boolean;
-  githubLink: string;
-};
-
-export type GenAISamples = {
-  [language: string]: GenAISample[];
-};
+const { access, mkdir, opendir, writeFile } = require('fs/promises');
+const path = require('path');
 
 const LANGUAGE_TITLES = {
   c: 'C',
   cpp: 'C++',
   js: 'JavaScript',
   python: 'Python',
-} as const;
+};
 
-async function findSamples(samplesPath: string): Promise<GenAISamples> {
-  const samplesMap: GenAISamples = {};
+async function findSamples(samplesPath) {
+  const samplesMap = {};
 
   for await (const dir of await opendir(samplesPath)) {
     const dirPath = path.join(samplesPath, dir.name);
@@ -69,11 +56,7 @@ async function findSamples(samplesPath: string): Promise<GenAISamples> {
   return samplesMap;
 }
 
-async function generateSamplesDocs(
-  samplesMap: GenAISamples,
-  docsSamplesPath: string,
-  spokeRoot: string,
-): Promise<void> {
+async function generateSamplesDocs(samplesMap, docsSamplesPath, spokeRoot) {
   for (const [language, samples] of Object.entries(samplesMap)) {
     const languageDirPath = path.join(docsSamplesPath, language);
     const languageTitle = samples[0]?.languageTitle;
@@ -85,7 +68,7 @@ async function generateSamplesDocs(
   }
 }
 
-async function generateCategory(language: string, dirPath: string): Promise<void> {
+async function generateCategory(language, dirPath) {
   const content = {
     label: language,
     link: {
@@ -97,11 +80,7 @@ async function generateCategory(language: string, dirPath: string): Promise<void
   await writeFile(path.join(dirPath, '_category_.json'), JSON.stringify(content, null, 2));
 }
 
-async function generateSampleDocFile(
-  sample: GenAISample,
-  dirPath: string,
-  spokeRoot: string,
-): Promise<void> {
+async function generateSampleDocFile(sample, dirPath, spokeRoot) {
   const sampleDocPath = path.join(dirPath, `${sample.name}.mdx`);
 
   const readmeImportContent = `
@@ -124,10 +103,7 @@ ${sample.hasReadme ? readmeImportContent : fallbackContent}`;
   await writeFile(sampleDocPath, content);
 }
 
-export default async function GenAISamplesDocsPlugin(
-  _context: unknown,
-  options: { spokeRoot?: string },
-): Promise<Plugin> {
+module.exports = async function GenAISamplesDocsPlugin(_context, options) {
   const spokeRoot = options?.spokeRoot ?? '..';
   const samplesPath = path.join(spokeRoot, 'samples');
   const docsSamplesPath = path.join(spokeRoot, 'docs', 'samples');
@@ -152,4 +128,4 @@ export default async function GenAISamplesDocsPlugin(
         });
     },
   };
-}
+};
