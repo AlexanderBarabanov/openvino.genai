@@ -222,5 +222,6 @@
 - 'tools/llm_bench/requirements.txt'
 
 
-'category: GH Pages Docs':
-- 'site/**/*'
+'category: Docs':
+- 'docs/**/*'
+- 'docs.manifest.json'

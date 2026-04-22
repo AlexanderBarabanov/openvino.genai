@@ -55,7 +55,7 @@ When performing a code review on a Pull Request, additionally follow this protoc
 3. PR description must be up to date and include all information about the changes.
 4. Include C++ Core Guidelines references in review comments.
 5. Python Bindings: if C++ APIs are changed, check if the corresponding Python pybind11 wrappers in src/python need updates.
-6. Documentation: ensure that any new public APIs have docstrings in C++ headers and Python bindings. Ensure that new public APIs have documentation updated in /site.
+6. Documentation: ensure that any new public APIs have docstrings in C++ headers and Python bindings. Ensure that new public APIs have documentation updated in /docs.
 7. Test Coverage: ensure that new features or changes have corresponding tests.
 8. Verify that the result of every newly introduced function is used in at least one call site except for `void` functions.
 9. Helper scripts shouldn't be committed.

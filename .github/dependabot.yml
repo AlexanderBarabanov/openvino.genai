@@ -29,7 +29,6 @@ updates:
   #
   - package-ecosystem: "npm"
     directories:
-      - "/site"
       - "/src/js"
       - "/samples/js"
       - "/.github/actions/install_wheel"
