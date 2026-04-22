@@ -2,15 +2,7 @@
   "id": "openvino-genai",
   "label": "OpenVINO GenAI",
   "docsPath": "docs",
-  "routeBasePath": "gen-ai",
-  "requiredSharedComponents": [
-    "Button",
-    "LanguageTabs",
-    "TabItemPython",
-    "TabItemCpp",
-    "TabItemJS",
-    "OptimumCLI"
-  ],
+  "routeBasePath": "openvino-genai",
   "preBuild": {
     "type": "generate-samples",
     "samplesPath": "samples"
