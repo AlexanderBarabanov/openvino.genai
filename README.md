@@ -85,7 +85,7 @@ OpenVINO™ GenAI library provides a transparent way to use state-of-the-art gen
 - Sparse attention, which accelerates prefill by attending only to the most important regions of the attention matrix. OpenVINO GenAI currently supports two modes: Tri-shape and XAttention. See [here](https://openvinotoolkit.github.io/openvino.genai/docs/concepts/optimization-techniques/sparse-attention-prefill) for more details.
 
 Additionally, OpenVINO™ GenAI library implements a continuous batching approach to use OpenVINO within LLM serving. The continuous batching library could be used in LLM serving frameworks and supports the following features:
-- Prefix caching that caches fragments of previous generation requests and corresponding KVCache entries internally and uses them in case of repeated query.
+- Prefix caching that caches fragments of previous generation requests and corresponding KVCache entries internally and uses them in case of repeated query +++.
 
 Continuous batching functionality is used within OpenVINO Model Server (OVMS) to serve LLMs, see [here](https://docs.openvino.ai/2026/model-server/ovms_what_is_openvino_model_server.html) for more details.
 
