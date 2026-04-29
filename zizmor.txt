@@ -1,0 +1,92 @@
+info[template-injection]: code injection via template expansion
+  --> .github/workflows/trigger-doc-preview-manual.yml:83:44
+   |
+74 |         run: |
+   |         --- this run block
+...
+83 |             -f client_payload[branch]="${{ steps.pr-branch.outputs.head_ref }}" \
+   |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ may expand into attacker-controllable code
+   |
+   = note: audit confidence → Low
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#template-injection
+
+error[template-injection]: code injection via template expansion
+  --> .github/workflows/trigger-doc-preview-manual.yml:84:48
+   |
+74 |         run: |
+   |         --- this run block
+...
+84 |             -f client_payload[commit_sha]="${{ inputs.commit_sha }}" \
+   |                                                ^^^^^^^^^^^^^^^^^ may expand into attacker-controllable code
+   |
+   = note: audit confidence → High
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#template-injection
+
+error[template-injection]: code injection via template expansion
+  --> .github/workflows/trigger-doc-preview-manual.yml:84:48
+   |
+74 |         run: |
+   |         --- this run block
+...
+84 |             -f client_payload[commit_sha]="${{ inputs.commit_sha }}" \
+   |                                                ^^^^^^^^^^^^^^^^^ may expand into attacker-controllable code
+   |
+   = note: audit confidence → High
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#template-injection
+
+error[template-injection]: code injection via template expansion
+  --> .github/workflows/trigger-doc-preview.yml:84:44
+   |
+75 |         run: |
+   |         --- this run block
+...
+84 |             -f client_payload[branch]="${{ github.event.pull_request.head.ref }}" \
+   |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ may expand into attacker-controllable code
+   |
+   = note: audit confidence → High
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#template-injection
+
+error[template-injection]: code injection via template expansion
+   --> .github/workflows/trigger-doc-preview.yml:115:26
+    |
+112 |         run: |
+    |         --- this run block
+...
+115 |           MERGE_SHA="${{ github.event.pull_request.merge_commit_sha }}"
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ may expand into attacker-controllable code
+    |
+    = note: audit confidence → High
+    = note: this finding has an auto-fix
+    = help: audit documentation → https://docs.zizmor.sh/audits/#template-injection
+
+error[template-injection]: code injection via template expansion
+   --> .github/workflows/trigger-doc-preview.yml:124:44
+    |
+112 |         run: |
+    |         --- this run block
+...
+124 |             -f client_payload[branch]="${{ github.event.pull_request.base.ref }}" \
+    |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ may expand into attacker-controllable code
+    |
+    = note: audit confidence → High
+    = note: this finding has an auto-fix
+    = help: audit documentation → https://docs.zizmor.sh/audits/#template-injection
+
+error[template-injection]: code injection via template expansion
+   --> .github/workflows/trigger-doc-preview.yml:127:112
+    |
+112 | ...   run: |
+    |       --- this run block
+...
+127 | ...     echo "Merge deployment triggered for PR #${{ github.event.pull_request.number }} @ $MERGE_SHA on ${{ github.event.pull_request.base.ref }}"
+    |                                                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ may expand into attacker-controllable code
+    |
+    = note: audit confidence → High
+    = note: this finding has an auto-fix
+    = help: audit documentation → https://docs.zizmor.sh/audits/#template-injection
+
+34 findings (27 suppressed, 7 fixable): 1 informational, 0 low, 0 medium, 6 high

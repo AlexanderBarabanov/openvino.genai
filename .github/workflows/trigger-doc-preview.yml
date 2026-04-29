@@ -14,9 +14,30 @@ name: Trigger Documentation Preview Deployment
 #
 #   - PR closed without merging (still labeled) →
 #       hub `close-preview` dispatch (deletes <DEV>/pr/<N>/).
+#
+# SECURITY WARNING:
+# This workflow uses `pull_request` trigger, which means it only works for PRs
+# from branches within the same repository (secrets are unavailable for fork PRs).
+#
+# !!! NEVER CHANGE THIS TO `pull_request_target`!!!
+#
+# Using `pull_request_target` would create a security issue:
+#   1. Attacker opens a legitimate PR from a fork
+#   2. Maintainer adds the `deploy-doc-preview` label (trusting the initial code)
+#   3. Attacker pushes a malicious commit to their PR branch
+#   4. The `synchronize` event triggers this workflow with full secret access
+#   5. Workflow dispatches to hub repo with attacker-controlled commit SHA
+#   6. Hub repo checks out the malicious SHA from the fork
+#   7. Result: Remote Code Execution in the hub's build environment
+#
+# The current `pull_request` trigger is safe because it runs without secret access,
+# preventing the dispatch call from succeeding for fork PRs.
+#
+# To deploy documentation previews from fork PRs: review and verify the PR code is safe
+# and use the manual workflow: .github/workflows/trigger-doc-preview-manual.yml
 
 on:
-  pull_request:
+  pull_request: # NEVER CHANGE THIS TO `pull_request_target`
     types: [labeled, synchronize, closed]
 
 permissions: {} # No permissions by default on workflow level
@@ -48,19 +69,24 @@ jobs:
       - name: Dispatch deploy-preview (preview mode)
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          DOC_HUB_REPO: ${{ secrets.DOC_HUB_REPO }}
+          SOURCE_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/${{ secrets.DOC_HUB_REPO }}/dispatches \
+            repos/$DOC_HUB_REPO/dispatches \
             -f event_type='deploy-preview' \
-            -f client_payload[source_repo]="${{ github.repository }}" \
-            -f client_payload[pr_number]="${{ github.event.pull_request.number }}" \
-            -f client_payload[branch]="${{ github.event.pull_request.head.ref }}" \
-            -f client_payload[commit_sha]="${{ github.event.pull_request.head.sha }}" \
+            -f client_payload[source_repo]="$SOURCE_REPO" \
+            -f client_payload[pr_number]="$PR_NUMBER" \
+            -f client_payload[branch]="$BRANCH" \
+            -f client_payload[commit_sha]="$COMMIT_SHA" \
             --silent
-          echo "Preview deployment triggered for PR #${{ github.event.pull_request.number }} @ ${{ github.event.pull_request.head.sha }}"
+          echo "Preview deployment triggered for PR #$PR_NUMBER @ $COMMIT_SHA"
 
   merge:
     name: Dispatch merge build
@@ -85,22 +111,26 @@ jobs:
       - name: Dispatch deploy-preview (merge mode)
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          DOC_HUB_REPO: ${{ secrets.DOC_HUB_REPO }}
+          SOURCE_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BRANCH: ${{ github.event.pull_request.base.ref }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
         run: |
           # `merge_commit_sha` is the new commit on the base branch produced
           # by the merge (or squash). Hub validates it against the PR.
-          MERGE_SHA="${{ github.event.pull_request.merge_commit_sha }}"
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            repos/${{ secrets.DOC_HUB_REPO }}/dispatches \
+            repos/$DOC_HUB_REPO/dispatches \
             -f event_type='deploy-preview' \
-            -f client_payload[source_repo]="${{ github.repository }}" \
-            -f client_payload[pr_number]="${{ github.event.pull_request.number }}" \
-            -f client_payload[branch]="${{ github.event.pull_request.base.ref }}" \
+            -f client_payload[source_repo]="$SOURCE_REPO" \
+            -f client_payload[pr_number]="$PR_NUMBER" \
+            -f client_payload[branch]="$BRANCH" \
             -f client_payload[commit_sha]="$MERGE_SHA" \
             --silent
-          echo "Merge deployment triggered for PR #${{ github.event.pull_request.number }} @ $MERGE_SHA on ${{ github.event.pull_request.base.ref }}"
+          echo "Merge deployment triggered for PR #$PR_NUMBER @ $MERGE_SHA on $BRANCH"
 
   close:
     name: Dispatch preview cleanup
