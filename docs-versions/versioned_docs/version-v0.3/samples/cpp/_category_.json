@@ -1,0 +1,7 @@
+{
+  "label": "C++",
+  "link": {
+    "type": "generated-index",
+    "description": "OpenVINO GenAI C++ samples"
+  }
+}
