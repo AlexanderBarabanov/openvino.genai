@@ -9,6 +9,7 @@ Full fine-tuning of larger models (consisting of billions of parameters) is inhe
 LoRA works by adding a smaller number of new weights to the model for training, rather than retraining the entire parameter space of the model.
 This makes training with LoRA much faster, memory-efficient, and produces smaller model weights (a few hundred MBs), which are easier to store and share.
 
+
 At its core, LoRA leverages the concept of low-rank matrix factorization.
 Instead of updating all the parameters in a neural network, LoRA decomposes the parameter space into two low-rank matrices.
 This decomposition allows the model to capture essential information with fewer parameters, significantly reducing the amount of data and computation required for fine-tuning.
