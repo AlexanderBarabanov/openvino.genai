@@ -31,13 +31,10 @@ set -euo pipefail
 
 VERSION="${1:-}"
 if [[ -z "$VERSION" ]]; then
-  echo "Usage: $0 vMAJOR.MINOR" >&2
+  echo "Usage: $0 VERSION_STRING (e.g. 2026.4)" >&2
   exit 1
 fi
-if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+$ ]]; then
-  echo "Error: VERSION must look like vMAJOR.MINOR (e.g. v0.2). Got: '$VERSION'" >&2
-  exit 1
-fi
+
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 DOCS_DIR="$ROOT_DIR/docs"
